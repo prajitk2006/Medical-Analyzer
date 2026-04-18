@@ -1,0 +1,22 @@
+# Data Manipulation & Analysis
+pandas
+numpy
+
+# Machine Learning & Predictive Analytics
+scikit-learn
+
+# Explainable AI
+shap
+
+# Data Visualization
+matplotlib
+seaborn
+
+# Web Application
+Flask
+
+# Testing
+pytest
+
+# Development & Notebooks
+jupyter

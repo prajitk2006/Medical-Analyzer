@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Analytics · Siemens Healthineers</title>
+    <meta name="description" content="Hospital Operations Analytics Dashboard — Clinician Workload, Bed Occupancy, Staffing, and Patient Flow Intelligence.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<div class="app-container">
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-heart-pulse"></i>
+            <span>The<span class="highlight">Analyzer</span></span>
+        </div>
+        <ul class="nav-links" id="navLinks">
+            <li class="active" data-target="view-dashboard"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></li>
+            <li data-target="view-staffing"><i class="fa-solid fa-users"></i><span>Staffing</span></li>
+            <li data-target="view-occupancy"><i class="fa-solid fa-bed-pulse"></i><span>Occupancy</span></li>
+            <li data-target="view-reports"><i class="fa-solid fa-file-medical"></i><span>Reports</span></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>Siemens Healthineers</p>
+            <small>Operational Intelligence</small>
+        </div>
+    </nav>
+
+    <!-- Main -->
+    <main class="main-content">
+        <header class="top-header">
+            <div class="header-titles">
+                <h1 id="pageTitle">Clinician Workload &amp; Patient Flow</h1>
+                <p class="subtitle" id="pageSubtitle">Data-driven recommendations to reduce administrative burden and optimize shift scheduling</p>
+            </div>
+            <button class="btn-primary"><i class="fa-solid fa-download"></i> Export Report</button>
+        </header>
+
+        <!-- ── DASHBOARD VIEW ────────────────────────────────── -->
+        <section id="view-dashboard" class="view">
+            <div class="insight-banner animate-up">
+                <div class="banner-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                <div class="banner-content">
+                    <p><strong>Key Operational Insight:</strong> Emergency Department experiences a 40% surge on Tuesday mornings.</p>
+                    <p class="action-text"><strong>Action Required:</strong> Reallocate 2 additional staff to ED on Tuesday 7am–3pm shift to reduce wait times by estimated 22 minutes.</p>
+                </div>
+            </div>
+            <div class="grid-2col">
+                <div class="card animate-up" style="--d:.1s">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-chart-line accent"></i> Department Wait Times</h2>
+                        <span class="badge warn">High Variance in ED</span>
+                    </div>
+                    <div class="chart-box"><canvas id="deptChart"></canvas></div>
+                </div>
+                <div class="card animate-up" style="--d:.2s">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-fire accent"></i> Peak Arrival Heatmap</h2>
+                        <span class="badge danger">Tue 10am Overload</span>
+                    </div>
+                    <div class="heatmap-wrap"><table id="heatmapTable"></table></div>
+                </div>
+                <div class="card animate-up" style="--d:.3s">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-users accent"></i> Readmission by Age</h2>
+                        <span class="badge info">Seniors 66+ High Risk</span>
+                    </div>
+                    <div class="chart-box"><canvas id="readmissionChart"></canvas></div>
+                </div>
+                <div class="card animate-up" style="--d:.4s">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-bed accent"></i> Occupancy Forecast</h2>
+                        <span class="badge warn">+15% Demand Next Week</span>
+                    </div>
+                    <div class="chart-box"><canvas id="occupancyChart"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── STAFFING VIEW ─────────────────────────────────── -->
+        <section id="view-staffing" class="view hidden">
+            <div class="card animate-up">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-user-nurse accent"></i> 24-Hour Staffing Needs by Department</h2>
+                    <span class="badge info">Hourly Recommendations</span>
+                </div>
+                <div class="chart-box" style="height:400px"><canvas id="staffingChart"></canvas></div>
+            </div>
+
+            <div style="margin-top:24px">
+                <h2 class="section-title animate-up"><i class="fa-solid fa-id-badge accent"></i> Staff Directory &amp; Assignments</h2>
+                <div id="staffDirectory" class="staff-grid animate-up"></div>
+                <div id="staffPanel" class="detail-panel hidden"></div>
+            </div>
+        </section>
+
+        <!-- ── OCCUPANCY VIEW ────────────────────────────────── -->
+        <section id="view-occupancy" class="view hidden">
+            <div class="grid-2col" style="grid-template-columns:2fr 1fr">
+                <div class="card animate-up">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-chart-area accent"></i> 30-Day Occupancy + 7-Day Forecast</h2>
+                        <span class="badge warn">+15% Demand Forecast</span>
+                    </div>
+                    <div class="chart-box" style="height:380px"><canvas id="detailedOccChart"></canvas></div>
+                </div>
+                <div class="card animate-up" style="--d:.1s">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-chart-pie accent"></i> Bed Utilization</h2>
+                        <span class="badge info">100 Beds Total</span>
+                    </div>
+                    <div class="chart-box" style="height:380px"><canvas id="utilizationChart"></canvas></div>
+                </div>
+            </div>
+            <div class="stats-row animate-up" style="--d:.2s">
+                <div class="stat-card">
+                    <i class="fa-solid fa-bed-pulse accent"></i>
+                    <div>
+                        <div class="stat-num" id="statOccupied">—</div>
+                        <div class="stat-label">Occupied Beds</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-check-circle" style="color:var(--success)"></i>
+                    <div>
+                        <div class="stat-num" id="statAvail">—</div>
+                        <div class="stat-label">Available Beds</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-percent accent"></i>
+                    <div>
+                        <div class="stat-num" id="statRate">—</div>
+                        <div class="stat-label">Utilization Rate</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-arrow-trend-up" style="color:var(--warn)"></i>
+                    <div>
+                        <div class="stat-num" id="statForecast">+15%</div>
+                        <div class="stat-label">7-Day Forecast Change</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── REPORTS VIEW ──────────────────────────────────── -->
+        <section id="view-reports" class="view hidden">
+            <div class="rec-grid animate-up">
+                <div class="rec-card card">
+                    <div class="rec-num">01</div>
+                    <h3>Reallocate Staff to ED</h3>
+                    <p class="rec-evidence">Heatmap shows 40% patient volume spike on Tuesdays 8am–12pm.</p>
+                    <hr>
+                    <p class="rec-action"><strong>Action:</strong> Shift two nurses/one physician to cover Tuesday 7am–3pm.</p>
+                </div>
+                <div class="rec-card card">
+                    <div class="rec-num">02</div>
+                    <h3>Senior Follow-up Protocol</h3>
+                    <p class="rec-evidence">66+ age group shows 27% readmission rate vs 12% hospital average.</p>
+                    <hr>
+                    <p class="rec-action"><strong>Action:</strong> Nurse-led phone check-in within 48h of discharge.</p>
+                </div>
+                <div class="rec-card card">
+                    <div class="rec-num">03</div>
+                    <h3>Predictive Radiology Scheduling</h3>
+                    <p class="rec-evidence">Bed occupancy forecast +15% next week; Radiology wait time variability is high.</p>
+                    <hr>
+                    <p class="rec-action"><strong>Action:</strong> Pre-schedule additional MRI/CT tech hours on forecasted peak days.</p>
+                </div>
+            </div>
+
+            <h2 class="section-title animate-up" style="margin-top:36px"><i class="fa-solid fa-folder-open accent"></i> Patient Records &amp; History</h2>
+            <div class="card animate-up" style="--d:.1s; padding:0; overflow:hidden;">
+                <div id="patientPanel" class="detail-panel hidden" style="border-radius:0; border-left:none; border-top:none; border-right:none; border-bottom: 1px solid var(--border)"></div>
+                <div class="table-wrap">
+                    <table class="data-table" id="patientTable">
+                        <thead>
+                            <tr>
+                                <th>Patient ID</th>
+                                <th>Admit Date</th>
+                                <th>Department</th>
+                                <th>Diagnosis</th>
+                                <th>Attending Doctor</th>
+                                <th>Risk</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
