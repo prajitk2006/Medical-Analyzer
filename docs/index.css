@@ -47,7 +47,7 @@ body {
 /* ── Layout ────────────────────────────────────────────── */
 .app-container { display: flex; min-height: 100vh; }
 
-/* ── Sidebar (Editorial Style) ─────────────────────────── */
+/* ── Sidebar (Editorial Style + Glassmorphism) ─────────── */
 .sidebar {
     width: var(--sidebar);
     position: fixed;
@@ -55,7 +55,9 @@ body {
     display: flex;
     flex-direction: column;
     padding: 32px 0;
-    background: var(--bg); /* Blend with body */
+    background: rgba(255, 255, 255, 0.65); /* Frosted Glass */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-right: 1px solid var(--border-strong);
     z-index: 50;
 }
