@@ -1,10 +1,15 @@
 // ── Chart.js Global Defaults ──────────────────────────────────
-Chart.defaults.color = '#9CA3AF';
-Chart.defaults.font.family = "'Outfit', sans-serif";
-Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(12,19,36,.95)';
+Chart.defaults.color = '#6B7280';
+Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+Chart.defaults.plugins.tooltip.backgroundColor = '#FFFFFF';
+Chart.defaults.plugins.tooltip.titleColor = '#1B263B';
+Chart.defaults.plugins.tooltip.bodyColor = '#6B7280';
+Chart.defaults.plugins.tooltip.borderColor = 'rgba(0,0,0,0.08)';
+Chart.defaults.plugins.tooltip.borderWidth = 1;
 Chart.defaults.plugins.tooltip.padding = 12;
 Chart.defaults.plugins.tooltip.cornerRadius = 8;
-Chart.defaults.scale.grid.color = 'rgba(255,255,255,.05)';
+Chart.defaults.plugins.tooltip.boxPadding = 6;
+Chart.defaults.scale.grid.color = 'rgba(0,0,0,0.04)';
 
 // ── Utilities ─────────────────────────────────────────────────
 async function fetchJSON(path) {
@@ -60,13 +65,13 @@ function setupNav(onTabChange) {
 async function init() {
     // Load data
     const [deptData, heatData, occData, foreData, staffData, staffDetails, patients] = await Promise.all([
-        fetchJSON('../data/processed/dept_wait_metrics.json'),
-        fetchJSON('../data/processed/peak_load_heatmap.json'),
-        fetchJSON('../data/processed/bed_occupancy_daily.json'),
-        fetchJSON('../data/processed/bed_forecast.json'),
-        fetchJSON('../data/processed/staffing_needs_by_dept_hour.json'),
-        fetchJSON('../data/processed/staff_details.json'),
-        fetchJSON('../data/processed/detailed_patients.json'),
+        fetchJSON('./data/processed/dept_wait_metrics.json'),
+        fetchJSON('./data/processed/peak_load_heatmap.json'),
+        fetchJSON('./data/processed/bed_occupancy_daily.json'),
+        fetchJSON('./data/processed/bed_forecast.json'),
+        fetchJSON('./data/processed/staffing_needs_by_dept_hour.json'),
+        fetchJSON('./data/processed/staff_details.json'),
+        fetchJSON('./data/processed/detailed_patients.json'),
     ]);
 
     // Show dashboard tab first
@@ -102,7 +107,7 @@ async function init() {
 function buildDeptChart(data) {
     const depts = data ? data.map(d => d.Department) : ['Emergency','Radiology','Surgery','Cardiology','Neurology','Pediatrics'];
     const waits = data ? data.map(d => d.Avg_Wait_Minutes) : [45,30,15,12,18,14];
-    const colors = ['#38BDF8','#8B5CF6','#F43F5E','#10B981','#F59E0B','#6366F1'];
+    const colors = ['#2C4C3B','#C85A47','#DDA74F','#3E5A74','#8B7355','#4A6B5D'];
     const labels = [];
     for (let i = 0; i < 28; i++) {
         const d = new Date(2023, 11, i + 1);
@@ -164,8 +169,8 @@ function buildHeatmap(data) {
             let sum = 0;
             for (let j = 0; j < 4; j++) sum += mat[i + j][d];
             const int = sum / (max * 4);
-            const bg = `rgba(56,189,248,${0.08 + int * 0.88})`;
-            const col = int > 0.5 ? '#fff' : 'var(--accent)';
+            const bg = `rgba(200,90,71,${0.05 + int * 0.95})`;
+            const col = int > 0.5 ? '#fff' : 'var(--text)';
             html += `<td style="background:${bg};color:${col}">${sum}</td>`;
         });
         html += '</tr>';
@@ -181,7 +186,7 @@ function buildReadmissionChart() {
             datasets: [{
                 label: 'Readmission Rate (%)',
                 data: [8.2, 10.5, 14.3, 27.1],
-                backgroundColor: (ctx) => ctx.dataIndex === 3 ? 'rgba(239,68,68,.8)' : 'rgba(56,189,248,.65)',
+                backgroundColor: (ctx) => ctx.dataIndex === 3 ? '#C85A47' : '#DDA74F',
                 borderRadius: 6,
                 borderWidth: 0,
                 barPercentage: 0.6,
@@ -216,12 +221,12 @@ function buildOccupancyOverview(occData, foreData) {
     const fSeries  = [...Array(hDates.length-1).fill(null), hRates[hRates.length-1], ...fRates];
     const ctx = document.getElementById('occupancyChart').getContext('2d');
     const grad = ctx.createLinearGradient(0,0,0,260);
-    grad.addColorStop(0,'rgba(56,189,248,.4)'); grad.addColorStop(1,'rgba(56,189,248,0)');
+    grad.addColorStop(0,'rgba(44,76,59,.15)'); grad.addColorStop(1,'rgba(44,76,59,0)');
     new Chart(ctx, {
         type:'line',
         data: { labels:allDates, datasets:[
-            { label:'Historical', data:hSeries, borderColor:'#38BDF8', backgroundColor:grad, fill:true, tension:.3, pointRadius:3, borderWidth:2 },
-            { label:'Forecast',   data:fSeries, borderColor:'#F59E0B', borderDash:[5,5], backgroundColor:'transparent', tension:.3, pointRadius:4, pointBackgroundColor:'#0B1120', borderWidth:2 },
+            { label:'Historical', data:hSeries, borderColor:'#2C4C3B', backgroundColor:grad, fill:true, tension:.3, pointRadius:3, borderWidth:2 },
+            { label:'Forecast',   data:fSeries, borderColor:'#DDA74F', borderDash:[5,5], backgroundColor:'transparent', tension:.3, pointRadius:4, pointBackgroundColor:'#FFFFFF', borderWidth:2 },
         ]},
         options: {
             responsive:true, maintainAspectRatio:false,
@@ -238,7 +243,7 @@ function buildStaffingChart(data) {
     if (!data) return;
     const depts = [...new Set(data.map(d => d.Department))];
     const hours = Array.from({length:24}, (_,i) => `${i}:00`);
-    const colors = ['#38BDF8','#8B5CF6','#F43F5E','#10B981','#F59E0B','#6366F1'];
+    const colors = ['#2C4C3B','#C85A47','#DDA74F','#3E5A74','#8B7355','#4A6B5D'];
     const datasets = depts.map((dept,i) => {
         const pts = data.filter(d => d.Department===dept).sort((a,b) => a.Admission_Hour-b.Admission_Hour);
         return {
@@ -319,12 +324,12 @@ function buildDetailedOccChart(occData, foreData) {
     const fS  = [...Array(hD.length-1).fill(null), hR[hR.length-1], ...fR];
     const ctx = document.getElementById('detailedOccChart').getContext('2d');
     const grad = ctx.createLinearGradient(0,0,0,350);
-    grad.addColorStop(0,'rgba(56,189,248,.38)'); grad.addColorStop(1,'rgba(56,189,248,0)');
+    grad.addColorStop(0,'rgba(44,76,59,.2)'); grad.addColorStop(1,'rgba(44,76,59,0)');
     new Chart(ctx, {
         type:'bar',
         data:{ labels:all, datasets:[
-            { type:'line', label:'Forecast', data:fS, borderColor:'#F59E0B', borderDash:[5,5], backgroundColor:'transparent', tension:.3, pointRadius:4, pointBackgroundColor:'#0B1120', borderWidth:2.5 },
-            { type:'bar',  label:'Historical Occupancy', data:hS, backgroundColor:grad, borderColor:'#38BDF8', borderWidth:1, borderRadius:3 },
+            { type:'line', label:'Forecast', data:fS, borderColor:'#DDA74F', borderDash:[5,5], backgroundColor:'transparent', tension:.3, pointRadius:4, pointBackgroundColor:'#FFFFFF', borderWidth:2.5 },
+            { type:'bar',  label:'Historical Occupancy', data:hS, backgroundColor:grad, borderColor:'#2C4C3B', borderWidth:1, borderRadius:3 },
         ]},
         options:{
             responsive:true, maintainAspectRatio:false,
@@ -355,8 +360,8 @@ function buildUtilizationChart(occData) {
             labels:['Occupied','Available'],
             datasets:[{
                 data:[occupied, available],
-                backgroundColor: [isHigh ? 'rgba(239,68,68,.8)' : 'rgba(56,189,248,.8)', 'rgba(255,255,255,.06)'],
-                borderColor:     [isHigh ? '#EF4444' : '#38BDF8', 'rgba(255,255,255,.08)'],
+                backgroundColor: [isHigh ? '#C85A47' : '#2C4C3B', '#F4F2EC'],
+                borderColor:     [isHigh ? '#C85A47' : '#2C4C3B', '#E2DED0'],
                 borderWidth:2,
                 hoverOffset:8,
             }]
@@ -378,11 +383,11 @@ function buildUtilizationChart(occData) {
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 const cx = width/2, cy = top+height/2;
-                ctx.font = 'bold 2.4rem Outfit, sans-serif';
-                ctx.fillStyle = '#F3F4F6';
+                ctx.font = 'bold 2.4rem Inter, sans-serif';
+                ctx.fillStyle = '#1B263B';
                 ctx.fillText(`${occupied}%`, cx, cy-12);
-                ctx.font = '.82rem Outfit, sans-serif';
-                ctx.fillStyle = '#9CA3AF';
+                ctx.font = '.82rem Inter, sans-serif';
+                ctx.fillStyle = '#6B7280';
                 ctx.fillText('Utilization', cx, cy+18);
                 ctx.restore();
             }
