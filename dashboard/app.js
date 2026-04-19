@@ -1,15 +1,15 @@
 // ── Chart.js Global Defaults ──────────────────────────────────
-Chart.defaults.color = '#6B7280';
-Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
-Chart.defaults.plugins.tooltip.backgroundColor = '#FFFFFF';
-Chart.defaults.plugins.tooltip.titleColor = '#1B263B';
-Chart.defaults.plugins.tooltip.bodyColor = '#6B7280';
-Chart.defaults.plugins.tooltip.borderColor = 'rgba(0,0,0,0.08)';
+Chart.defaults.color = '#94A3B8';
+Chart.defaults.font.family = "'Outfit', system-ui, sans-serif";
+Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(11, 14, 20, 0.9)';
+Chart.defaults.plugins.tooltip.titleColor = '#F8FAFC';
+Chart.defaults.plugins.tooltip.bodyColor = '#94A3B8';
+Chart.defaults.plugins.tooltip.borderColor = 'rgba(255, 255, 255, 0.1)';
 Chart.defaults.plugins.tooltip.borderWidth = 1;
 Chart.defaults.plugins.tooltip.padding = 12;
 Chart.defaults.plugins.tooltip.cornerRadius = 8;
 Chart.defaults.plugins.tooltip.boxPadding = 6;
-Chart.defaults.scale.grid.color = 'rgba(0,0,0,0.04)';
+Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.05)';
 
 // ── Utilities ─────────────────────────────────────────────────
 async function fetchJSON(path) {
@@ -48,14 +48,15 @@ function setupNav(onTabChange) {
 
             // Update header text
             const titles = {
-                'view-dashboard': ['Clinician Workload & Patient Flow', 'Data-driven recommendations to reduce administrative burden and optimize shift scheduling'],
-                'view-staffing':  ['Staffing Intelligence', 'Real-time recommended staffing levels by department and hour'],
-                'view-occupancy': ['Bed Occupancy & Utilization', 'Live utilization metrics and 7-day demand forecast'],
-                'view-reports':   ['Operational Reports & Patient Records', 'Clinical recommendations and clickable patient history'],
-            };
+            'view-dashboard': { title: 'Clinician Workload & Patient Flow', sub: 'Data-driven recommendations to reduce administrative burden and optimize shift scheduling' },
+            'view-staffing': { title: 'Staffing Intelligence', sub: 'Real-time directory and predictive hourly staffing models' },
+            'view-occupancy': { title: 'Bed Occupancy Analytics', sub: 'Utilization rates, capacity forecasting, and historical trends' },
+            'view-reports': { title: 'Operational Reports', sub: 'Actionable evidence-based clinical recommendations and patient records' },
+            'view-datasets': { title: 'System Datasets', sub: 'Processed and aggregated intelligence data serving the dashboard' }
+        };
             if (titles[target]) {
-                document.getElementById('pageTitle').textContent = titles[target][0];
-                document.getElementById('pageSubtitle').textContent = titles[target][1];
+                document.getElementById('pageTitle').textContent = titles[target].title;
+                document.getElementById('pageSubtitle').textContent = titles[target].sub;
             }
         });
     });
@@ -169,8 +170,8 @@ function buildHeatmap(data) {
             let sum = 0;
             for (let j = 0; j < 4; j++) sum += mat[i + j][d];
             const int = sum / (max * 4);
-            const bg = `rgba(200,90,71,${0.05 + int * 0.95})`;
-            const col = int > 0.5 ? '#fff' : 'var(--text)';
+            const bg = `rgba(56,189,248,${0.05 + int * 0.95})`;
+            const col = int > 0.5 ? '#fff' : 'var(--accent)';
             html += `<td style="background:${bg};color:${col}">${sum}</td>`;
         });
         html += '</tr>';
@@ -186,7 +187,7 @@ function buildReadmissionChart() {
             datasets: [{
                 label: 'Readmission Rate (%)',
                 data: [8.2, 10.5, 14.3, 27.1],
-                backgroundColor: (ctx) => ctx.dataIndex === 3 ? '#C85A47' : '#DDA74F',
+                backgroundColor: (ctx) => ctx.dataIndex === 3 ? '#F43F5E' : '#38BDF8',
                 borderRadius: 6,
                 borderWidth: 0,
                 barPercentage: 0.6,
@@ -221,12 +222,12 @@ function buildOccupancyOverview(occData, foreData) {
     const fSeries  = [...Array(hDates.length-1).fill(null), hRates[hRates.length-1], ...fRates];
     const ctx = document.getElementById('occupancyChart').getContext('2d');
     const grad = ctx.createLinearGradient(0,0,0,260);
-    grad.addColorStop(0,'rgba(44,76,59,.15)'); grad.addColorStop(1,'rgba(44,76,59,0)');
+    grad.addColorStop(0,'rgba(56,189,248,.3)'); grad.addColorStop(1,'rgba(56,189,248,0)');
     new Chart(ctx, {
         type:'line',
         data: { labels:allDates, datasets:[
-            { label:'Historical', data:hSeries, borderColor:'#2C4C3B', backgroundColor:grad, fill:true, tension:.3, pointRadius:3, borderWidth:2 },
-            { label:'Forecast',   data:fSeries, borderColor:'#DDA74F', borderDash:[5,5], backgroundColor:'transparent', tension:.3, pointRadius:4, pointBackgroundColor:'#FFFFFF', borderWidth:2 },
+            { label:'Historical', data:hSeries, borderColor:'#38BDF8', backgroundColor:grad, fill:true, tension:.3, pointRadius:3, borderWidth:2 },
+            { label:'Forecast',   data:fSeries, borderColor:'#FBBF24', borderDash:[5,5], backgroundColor:'transparent', tension:.3, pointRadius:4, pointBackgroundColor:'#FFFFFF', borderWidth:2 },
         ]},
         options: {
             responsive:true, maintainAspectRatio:false,
@@ -243,7 +244,7 @@ function buildStaffingChart(data) {
     if (!data) return;
     const depts = [...new Set(data.map(d => d.Department))];
     const hours = Array.from({length:24}, (_,i) => `${i}:00`);
-    const colors = ['#2C4C3B','#C85A47','#DDA74F','#3E5A74','#8B7355','#4A6B5D'];
+    const colors = ['#38BDF8','#F43F5E','#FBBF24','#10B981','#8B5CF6','#6366F1'];
     const datasets = depts.map((dept,i) => {
         const pts = data.filter(d => d.Department===dept).sort((a,b) => a.Admission_Hour-b.Admission_Hour);
         return {
@@ -324,12 +325,12 @@ function buildDetailedOccChart(occData, foreData) {
     const fS  = [...Array(hD.length-1).fill(null), hR[hR.length-1], ...fR];
     const ctx = document.getElementById('detailedOccChart').getContext('2d');
     const grad = ctx.createLinearGradient(0,0,0,350);
-    grad.addColorStop(0,'rgba(44,76,59,.2)'); grad.addColorStop(1,'rgba(44,76,59,0)');
+    grad.addColorStop(0,'rgba(56,189,248,.3)'); grad.addColorStop(1,'rgba(56,189,248,0)');
     new Chart(ctx, {
         type:'bar',
         data:{ labels:all, datasets:[
-            { type:'line', label:'Forecast', data:fS, borderColor:'#DDA74F', borderDash:[5,5], backgroundColor:'transparent', tension:.3, pointRadius:4, pointBackgroundColor:'#FFFFFF', borderWidth:2.5 },
-            { type:'bar',  label:'Historical Occupancy', data:hS, backgroundColor:grad, borderColor:'#2C4C3B', borderWidth:1, borderRadius:3 },
+            { type:'line', label:'Forecast', data:fS, borderColor:'#FBBF24', borderDash:[5,5], backgroundColor:'transparent', tension:.3, pointRadius:4, pointBackgroundColor:'#FFFFFF', borderWidth:2.5 },
+            { type:'bar',  label:'Historical Occupancy', data:hS, backgroundColor:grad, borderColor:'#38BDF8', borderWidth:1, borderRadius:3 },
         ]},
         options:{
             responsive:true, maintainAspectRatio:false,
@@ -360,8 +361,8 @@ function buildUtilizationChart(occData) {
             labels:['Occupied','Available'],
             datasets:[{
                 data:[occupied, available],
-                backgroundColor: [isHigh ? '#C85A47' : '#2C4C3B', '#F4F2EC'],
-                borderColor:     [isHigh ? '#C85A47' : '#2C4C3B', '#E2DED0'],
+                backgroundColor: [isHigh ? '#F43F5E' : '#38BDF8', 'rgba(255,255,255,0.05)'],
+                borderColor:     [isHigh ? '#F43F5E' : '#38BDF8', 'transparent'],
                 borderWidth:2,
                 hoverOffset:8,
             }]
@@ -383,11 +384,11 @@ function buildUtilizationChart(occData) {
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 const cx = width/2, cy = top+height/2;
-                ctx.font = 'bold 2.4rem Inter, sans-serif';
-                ctx.fillStyle = '#1B263B';
+                ctx.font = 'bold 2.4rem Outfit, sans-serif';
+                ctx.fillStyle = '#F8FAFC';
                 ctx.fillText(`${occupied}%`, cx, cy-12);
-                ctx.font = '.82rem Inter, sans-serif';
-                ctx.fillStyle = '#6B7280';
+                ctx.font = '.82rem Outfit, sans-serif';
+                ctx.fillStyle = '#94A3B8';
                 ctx.fillText('Utilization', cx, cy+18);
                 ctx.restore();
             }

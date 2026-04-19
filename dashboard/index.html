@@ -1,89 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hospital Analytics · Siemens Healthineers</title>
-    <meta name="description"
-        content="Hospital Operations Analytics Dashboard — Clinician Workload, Bed Occupancy, Staffing, and Patient Flow Intelligence.">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
-        rel="stylesheet">
+    <meta name="description" content="Hospital Operations Analytics Dashboard — Clinician Workload, Bed Occupancy, Staffing, and Patient Flow Intelligence.">
+    <!-- Revert to Outfit font for modern tech/glassmorphism vibe -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <link rel="stylesheet" href="index.css">
 </head>
-
 <body>
-    <div class="app-container">
+    <!-- Background Animated Orbs -->
+    <div class="glass-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
 
-        <!-- Sidebar -->
-        <nav class="sidebar">
+    <!-- Top Navbar -->
+    <nav class="top-navbar">
+        <div class="nav-left">
             <div class="logo">
                 <i class="fa-solid fa-heart-pulse"></i>
                 <span>Medical<span class="highlight">Analytics</span></span>
             </div>
+        </div>
+        <div class="nav-right">
+            <div class="search-box">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" placeholder="Search records...">
+            </div>
+            <button class="btn-icon"><i class="fa-solid fa-bell"></i></button>
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=38BDF8&color=fff" alt="User">
+                <span>Admin</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
             <ul class="nav-links" id="navLinks">
-                <li class="active" data-target="view-dashboard"><i
-                        class="fa-solid fa-chart-pie"></i><span>Dashboard</span></li>
-                <li data-target="view-staffing"><i class="fa-solid fa-users"></i><span>Staffing</span></li>
+                <li class="active" data-target="view-dashboard"><i class="fa-solid fa-chart-pie"></i><span>Dashboard</span></li>
+                <li data-target="view-staffing"><i class="fa-solid fa-user-nurse"></i><span>Staffing</span></li>
                 <li data-target="view-occupancy"><i class="fa-solid fa-bed-pulse"></i><span>Occupancy</span></li>
                 <li data-target="view-reports"><i class="fa-solid fa-file-medical"></i><span>Reports</span></li>
+                <li data-target="view-datasets"><i class="fa-solid fa-database"></i><span>Datasets</span></li>
             </ul>
             <div class="sidebar-footer">
                 <p>Healthcare Analytics</p>
                 <small>Operational Intelligence</small>
             </div>
-        </nav>
+        </aside>
 
-        <!-- Main -->
+        <!-- Main Content -->
         <main class="main-content">
-            <header class="top-header">
+            <header class="page-header">
                 <div class="header-titles">
                     <h1 id="pageTitle">Clinician Workload &amp; Patient Flow</h1>
-                    <p class="subtitle" id="pageSubtitle">Data-driven recommendations to reduce administrative burden
-                        and optimize shift scheduling</p>
+                    <p class="subtitle" id="pageSubtitle">Data-driven recommendations to reduce administrative burden and optimize shift scheduling</p>
                 </div>
                 <button class="btn-primary"><i class="fa-solid fa-download"></i> Export Report</button>
             </header>
 
             <!-- ── DASHBOARD VIEW ────────────────────────────────── -->
             <section id="view-dashboard" class="view">
-                <div class="insight-banner animate-up">
-                    <div class="banner-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                <div class="insight-banner glass-card animate-up">
+                    <div class="banner-icon"><i class="fa-solid fa-bolt"></i></div>
                     <div class="banner-content">
-                        <p><strong>Key Operational Insight:</strong> Emergency Department experiences a 40% surge on
-                            Tuesday mornings.</p>
-                        <p class="action-text"><strong>Action Required:</strong> Reallocate 2 additional staff to ED on
-                            Tuesday 7am–3pm shift to reduce wait times by estimated 22 minutes.</p>
+                        <p><strong>Key Operational Insight:</strong> Emergency Department experiences a 40% surge on Tuesday mornings.</p>
+                        <p class="action-text"><strong>Action Required:</strong> Reallocate 2 additional staff to ED on Tuesday 7am–3pm shift to reduce wait times by estimated 22 minutes.</p>
                     </div>
                 </div>
                 <div class="grid-2col">
-                    <div class="card animate-up" style="--d:.1s">
+                    <div class="glass-card animate-up" style="--d:.1s">
                         <div class="card-header">
                             <h2><i class="fa-solid fa-chart-line accent"></i> Department Wait Times</h2>
                             <span class="badge warn">High Variance in ED</span>
                         </div>
                         <div class="chart-box"><canvas id="deptChart"></canvas></div>
                     </div>
-                    <div class="card animate-up" style="--d:.2s">
+                    <div class="glass-card animate-up" style="--d:.2s">
                         <div class="card-header">
                             <h2><i class="fa-solid fa-fire accent"></i> Peak Arrival Heatmap</h2>
                             <span class="badge danger">Tue 10am Overload</span>
                         </div>
-                        <div class="heatmap-wrap">
-                            <table id="heatmapTable"></table>
-                        </div>
+                        <div class="heatmap-wrap"><table id="heatmapTable"></table></div>
                     </div>
-                    <div class="card animate-up" style="--d:.3s">
+                    <div class="glass-card animate-up" style="--d:.3s">
                         <div class="card-header">
                             <h2><i class="fa-solid fa-users accent"></i> Readmission by Age</h2>
                             <span class="badge info">Seniors 66+ High Risk</span>
                         </div>
                         <div class="chart-box"><canvas id="readmissionChart"></canvas></div>
                     </div>
-                    <div class="card animate-up" style="--d:.4s">
+                    <div class="glass-card animate-up" style="--d:.4s">
                         <div class="card-header">
                             <h2><i class="fa-solid fa-bed accent"></i> Occupancy Forecast</h2>
                             <span class="badge warn">+15% Demand Next Week</span>
@@ -95,7 +109,7 @@
 
             <!-- ── STAFFING VIEW ─────────────────────────────────── -->
             <section id="view-staffing" class="view hidden">
-                <div class="card animate-up">
+                <div class="glass-card animate-up">
                     <div class="card-header">
                         <h2><i class="fa-solid fa-user-nurse accent"></i> 24-Hour Staffing Needs by Department</h2>
                         <span class="badge info">Hourly Recommendations</span>
@@ -104,24 +118,23 @@
                 </div>
 
                 <div style="margin-top:24px">
-                    <h2 class="section-title animate-up"><i class="fa-solid fa-id-badge accent"></i> Staff Directory
-                        &amp; Assignments</h2>
+                    <h2 class="section-title animate-up"><i class="fa-solid fa-id-badge accent"></i> Staff Directory &amp; Assignments</h2>
                     <div id="staffDirectory" class="staff-grid animate-up"></div>
-                    <div id="staffPanel" class="detail-panel hidden"></div>
+                    <div id="staffPanel" class="detail-panel glass-card hidden"></div>
                 </div>
             </section>
 
             <!-- ── OCCUPANCY VIEW ────────────────────────────────── -->
             <section id="view-occupancy" class="view hidden">
                 <div class="grid-2col" style="grid-template-columns:2fr 1fr">
-                    <div class="card animate-up">
+                    <div class="glass-card animate-up">
                         <div class="card-header">
                             <h2><i class="fa-solid fa-chart-area accent"></i> 30-Day Occupancy + 7-Day Forecast</h2>
                             <span class="badge warn">+15% Demand Forecast</span>
                         </div>
                         <div class="chart-box" style="height:380px"><canvas id="detailedOccChart"></canvas></div>
                     </div>
-                    <div class="card animate-up" style="--d:.1s">
+                    <div class="glass-card animate-up" style="--d:.1s">
                         <div class="card-header">
                             <h2><i class="fa-solid fa-chart-pie accent"></i> Bed Utilization</h2>
                             <span class="badge info">100 Beds Total</span>
@@ -130,29 +143,29 @@
                     </div>
                 </div>
                 <div class="stats-row animate-up" style="--d:.2s">
-                    <div class="stat-card">
-                        <i class="fa-solid fa-bed-pulse accent"></i>
+                    <div class="stat-card glass-card">
+                        <div class="icon-wrap"><i class="fa-solid fa-bed-pulse accent"></i></div>
                         <div>
                             <div class="stat-num" id="statOccupied">—</div>
                             <div class="stat-label">Occupied Beds</div>
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <i class="fa-solid fa-check-circle" style="color:var(--success)"></i>
+                    <div class="stat-card glass-card">
+                        <div class="icon-wrap success"><i class="fa-solid fa-check-circle"></i></div>
                         <div>
                             <div class="stat-num" id="statAvail">—</div>
                             <div class="stat-label">Available Beds</div>
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <i class="fa-solid fa-percent accent"></i>
+                    <div class="stat-card glass-card">
+                        <div class="icon-wrap info"><i class="fa-solid fa-percent"></i></div>
                         <div>
                             <div class="stat-num" id="statRate">—</div>
                             <div class="stat-label">Utilization Rate</div>
                         </div>
                     </div>
-                    <div class="stat-card">
-                        <i class="fa-solid fa-arrow-trend-up" style="color:var(--warn)"></i>
+                    <div class="stat-card glass-card">
+                        <div class="icon-wrap warn"><i class="fa-solid fa-arrow-trend-up"></i></div>
                         <div>
                             <div class="stat-num" id="statForecast">+15%</div>
                             <div class="stat-label">7-Day Forecast Change</div>
@@ -164,39 +177,32 @@
             <!-- ── REPORTS VIEW ──────────────────────────────────── -->
             <section id="view-reports" class="view hidden">
                 <div class="rec-grid animate-up">
-                    <div class="rec-card card">
+                    <div class="rec-card glass-card">
                         <div class="rec-num">01</div>
                         <h3>Reallocate Staff to ED</h3>
                         <p class="rec-evidence">Heatmap shows 40% patient volume spike on Tuesdays 8am–12pm.</p>
-                        <hr>
-                        <p class="rec-action"><strong>Action:</strong> Shift two nurses/one physician to cover Tuesday
-                            7am–3pm.</p>
+                        <div class="glow-line"></div>
+                        <p class="rec-action"><i class="fa-solid fa-arrow-right"></i> Shift two nurses/one physician to cover Tuesday 7am–3pm.</p>
                     </div>
-                    <div class="rec-card card">
+                    <div class="rec-card glass-card">
                         <div class="rec-num">02</div>
                         <h3>Senior Follow-up Protocol</h3>
                         <p class="rec-evidence">66+ age group shows 27% readmission rate vs 12% hospital average.</p>
-                        <hr>
-                        <p class="rec-action"><strong>Action:</strong> Nurse-led phone check-in within 48h of discharge.
-                        </p>
+                        <div class="glow-line"></div>
+                        <p class="rec-action"><i class="fa-solid fa-arrow-right"></i> Nurse-led phone check-in within 48h of discharge.</p>
                     </div>
-                    <div class="rec-card card">
+                    <div class="rec-card glass-card">
                         <div class="rec-num">03</div>
                         <h3>Predictive Radiology Scheduling</h3>
-                        <p class="rec-evidence">Bed occupancy forecast +15% next week; Radiology wait time variability
-                            is high.</p>
-                        <hr>
-                        <p class="rec-action"><strong>Action:</strong> Pre-schedule additional MRI/CT tech hours on
-                            forecasted peak days.</p>
+                        <p class="rec-evidence">Bed occupancy forecast +15% next week; Radiology wait time variability is high.</p>
+                        <div class="glow-line"></div>
+                        <p class="rec-action"><i class="fa-solid fa-arrow-right"></i> Pre-schedule additional MRI/CT tech hours on forecasted peak days.</p>
                     </div>
                 </div>
 
-                <h2 class="section-title animate-up" style="margin-top:36px"><i
-                        class="fa-solid fa-folder-open accent"></i> Patient Records &amp; History</h2>
-                <div class="card animate-up" style="--d:.1s; padding:0; overflow:hidden;">
-                    <div id="patientPanel" class="detail-panel hidden"
-                        style="border-radius:0; border-left:none; border-top:none; border-right:none; border-bottom: 1px solid var(--border)">
-                    </div>
+                <h2 class="section-title animate-up" style="margin-top:36px"><i class="fa-solid fa-folder-open accent"></i> Patient Records &amp; History</h2>
+                <div class="glass-card animate-up" style="--d:.1s; padding:0; overflow:hidden;">
+                    <div id="patientPanel" class="detail-panel hidden" style="border-radius:0; border-bottom: 1px solid rgba(255,255,255,0.1)"></div>
                     <div class="table-wrap">
                         <table class="data-table" id="patientTable">
                             <thead>
@@ -215,9 +221,84 @@
                 </div>
             </section>
 
+            <!-- ── DATASETS VIEW ─────────────────────────────────── -->
+            <section id="view-datasets" class="view hidden">
+                <div class="glass-card animate-up">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-database accent"></i> Project Datasets Dictionary</h2>
+                        <span class="badge info">ETL Processed JSON</span>
+                    </div>
+                    <p style="color:var(--muted); margin-bottom: 24px; font-size: 0.95rem; line-height: 1.5;">
+                        The dashboard is powered by a set of static JSON files generated through our Python ETL pipeline. These files represent the cleaned, transformed, and aggregated state of our raw hospital operations data.
+                    </p>
+                    
+                    <div class="table-wrap">
+                        <table class="data-table" id="datasetTable">
+                            <thead>
+                                <tr>
+                                    <th>Dataset Name</th>
+                                    <th>Description</th>
+                                    <th>Format</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>detailed_patients.json</strong></td>
+                                    <td>Comprehensive patient journey records including admission, discharge, diagnosis, length of stay, and readmission risk markers. Used for the Reports table.</td>
+                                    <td><span class="badge success">JSON</span></td>
+                                    <td><button class="btn-sm"><i class="fa-solid fa-download"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>bed_occupancy_daily.json</strong></td>
+                                    <td>Historical daily aggregation of bed occupancy rates. Used for utilization metrics and trend charting.</td>
+                                    <td><span class="badge success">JSON</span></td>
+                                    <td><button class="btn-sm"><i class="fa-solid fa-download"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>bed_forecast.json</strong></td>
+                                    <td>Predictive linear regression output mapping expected bed demand over the next 7 days based on seasonal and historical trends.</td>
+                                    <td><span class="badge success">JSON</span></td>
+                                    <td><button class="btn-sm"><i class="fa-solid fa-download"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>peak_load_heatmap.json</strong></td>
+                                    <td>Aggregated patient arrival counts bucketed by hour of day and day of week to identify emergency department bottlenecks.</td>
+                                    <td><span class="badge success">JSON</span></td>
+                                    <td><button class="btn-sm"><i class="fa-solid fa-download"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>dept_wait_metrics.json</strong></td>
+                                    <td>Time-series data tracking the average wait time from admission to first physician contact across different hospital departments.</td>
+                                    <td><span class="badge success">JSON</span></td>
+                                    <td><button class="btn-sm"><i class="fa-solid fa-download"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>staff_details.json</strong></td>
+                                    <td>Directory of attending physicians and nurses, including current assignments and departmental mapping.</td>
+                                    <td><span class="badge success">JSON</span></td>
+                                    <td><button class="btn-sm"><i class="fa-solid fa-download"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>staffing_needs_by_dept_hour.json</strong></td>
+                                    <td>Calculated staffing recommendations based on patient load volume and acuity levels across a 24-hour cycle.</td>
+                                    <td><span class="badge success">JSON</span></td>
+                                    <td><button class="btn-sm"><i class="fa-solid fa-download"></i></button></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>readmission_rates_by_age.json</strong></td>
+                                    <td>Aggregated percentages of patient 30-day readmissions segmented into primary age brackets.</td>
+                                    <td><span class="badge success">JSON</span></td>
+                                    <td><button class="btn-sm"><i class="fa-solid fa-download"></i></button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
         </main>
     </div>
     <script src="app.js"></script>
 </body>
-
 </html>
